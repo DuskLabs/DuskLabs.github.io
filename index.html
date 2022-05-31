@@ -64,7 +64,7 @@
             align-items: center;
             justify-content: center;
 
-            font-size: 2.5em;
+            font-size: 2em;
             font-weight: 500;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
         }
@@ -213,6 +213,7 @@
             justify-content: center;
 
             margin-bottom: 10px;
+            text-align: center;
 
             font-size: 1.5em;
             font-weight: 500;
@@ -296,6 +297,7 @@
 
         h1.reward{
             color: white;
+            text-align: center;
             font-size: 2.5em;
             font-weight: 500;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -382,12 +384,53 @@
             visibility: hidden;
 
             color: white;
+
+            text-align: center;
             font-size: 1.5em;
             font-weight: 500;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
         }
 
-        @media screen and (max-width: 600px){
+        @media screen and (max-width: 1050px){
+            div.parent{
+                width: 750px;
+                height: 450px;
+
+                margin-left: -375px;
+                margin-top: -225px;
+            }
+
+            div.stakingPanel{
+            width: 712.5px;
+            height: 315px;
+
+            margin-top: -140px;
+            margin-left: -344px;
+            }
+
+            div.claimPanel{
+                width: 712.5px;
+            height: 315px;
+
+            margin-top: -140px;
+            margin-left: -344px;
+            }
+
+            div.stakedNFTs{
+                width: 45%;
+            }
+
+            h1.reward{
+                font-size: 1.75em;
+            }
+
+            div.rewardButton{
+                font-size: 1.2em;
+                text-align: center;
+            }
+        }
+
+        @media screen and (max-width: 750px){
 
             div.connectButton{
                 width: 300px;
@@ -406,16 +449,29 @@
             width: 475px;
             height: 210px;
 
-            margin-top: -75px;
+            margin-top: -90px;
             margin-left: -237.5px;
             }
 
             div.claimPanel{
-                width: 475px;
+            width: 475px;
+            height: 210px;
+
+            margin-top: -90px;
+            margin-left: -237.5px;
             }
 
             div.stakedNFTs{
                 width: 35%;
+            }
+
+            h1.reward{
+                font-size: 1.5em;
+            }
+
+            div.rewardButton{
+                font-size: 0.8em;
+                text-align: center;
             }
 
         }
@@ -768,8 +824,11 @@
         let currentRowCount = 0;
         let currentItemsPerRow = {};
         let maxItemsPerRow = 3;
-        if(window.screen.width < 1100){
+        if(window.screen.width <= 750){
             maxItemsPerRow = 1;
+        }
+        if(window.screen.width > 750 && window.screen.width < 1050){
+            maxItemsPerRow = 2;
         }
         let currentStakedItems = 0;
         let currentUnstakedItems = 0;
@@ -912,8 +971,6 @@
                 stakeButton.style.color = "white";
             });
 
-            stakeNFT.addEventListener('click', (e) =>{
-            });
             stakeNFT.addEventListener('mouseover', (e) =>{
                 stakeNFT.style.transition = "color 0.5s ease";
                 stakeNFT.style.color = "black";
@@ -924,6 +981,7 @@
             });
 
             rewardButton.addEventListener('click', (e) =>{
+                claimRewards();
             });
             rewardButton.addEventListener('mouseover', (e) =>{
                 rewardButton.style.transition = "color 0.5s ease";
@@ -946,6 +1004,9 @@
 
         const openClaimPanel = () =>{
             document.getElementById("stakingPanel").style.visibility = "hidden";
+            document.getElementById("stakeNFT").style.visibility = "hidden";
+            document.getElementById("stakedNFTRewardText").style.visibility = "hidden";
+
             document.getElementById("claimPanel").style.visibility = "visible";
         }
 
@@ -1024,10 +1085,11 @@
         }
 
         const enableStakeButton = () =>{
-            document.getElementById("stakeNFT").textContent = "STAKE NFT";
+            document.getElementById("stakeNFT").style.visibility = "visible";
         }
 
         const enableUnstakeButton = () =>{
+            document.getElementById("stakeNFT").style.visibility = "visible";
             document.getElementById("stakeNFT").textContent = "UNSTAKE NFT";
         }
 
