@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta charset="utf-8">
+    <title>Rockstar Apes Stake</title>
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+</head>
+<body onload="initialise()">
+
+    <div class="connectButton" id="connectButton"> CONNECT WALLET </div>
+
+    <div class="parent" id="parent">
+        <div class="buttons" id="buttons">
+            <div class="stakeButton" id="stakeButton">STAKING</div>
+            <div class="claimButton" id="claimButton">CLAIM</div>
+        </div>
+
+        <div class="stakingPanel" id="stakingPanel">
+            <div class="stakedNFTs" id="stakedNFTs">
+                <div class="scrollDiv" id="scrollDiv">
+					<div class="parentScrollDiv" id="parentScrollDiv"> <!-- add the staked nfts -->
+                        <div class="scrollObject" id="scrollObject">
+                        </div>
+                    </div>
+				</div>
+            </div>
+
+            <div class="tabs" id="tabs">
+                <div class="stakeNFT" id="stakeNFT">STAKE NFT</div>
+                <h1 class="stakedNFTRewardText" id="stakedNFTRewardText">X COINS</h1>
+            </div>
+        </div>
+
+        <div class="claimPanel" id="claimPanel">
+            <h1 class="reward" id="reward">YOU HAVE X COINS TO CLAIM</h1>
+            <div class="rewardButton" id="rewardButton">CLAIM REWARDS</div>
+        </div>
+    </div>
+
+
+    <style>
+        div.connectButton{
+            position: absolute;
+
+            background-image: linear-gradient(to right, rgb(255, 59, 157), rgb(182, 130, 238));
+            color: white;
+
+            width: 400px;
+            height: 100px;
+
+            border-style: solid;
+            border-width: 2px;
+            border-color: black;
+
+            top: 50%;
+            left: 50%;
+            margin-left: -200px;
+            margin-top: -50px;
+
+            cursor: pointer;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 2.5em;
+            font-weight: 500;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        div.parent{
+            position: absolute;
+
+            background: rgba(0, 0, 0, 0.75);
+
+            width: 1000px;
+            height: 600px;
+
+            border-style: solid;
+            border-width: 2px;
+            border-color: rgb(153, 0, 255);
+
+            top: 50%;
+            left: 50%;
+            margin-top: -300px;
+            margin-left: -500px;
+
+            display: flex;
+            align-items: center;
+            justify-content: top;
+            flex-direction: column;
+
+            visibility: hidden;
+        }
+
+        div.buttons{
+            position: relative;
+
+            width: 95%;
+            height: 20%;
+
+
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-evenly;
+        }
+
+        div.stakeButton{
+            position: relative;
+
+            cursor: pointer;
+
+            width: 27.5%;
+            height: 70%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 1.5em;
+            font-weight: 500;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+
+            border: 1px solid white;
+            color: white;
+            background-image: linear-gradient(to right, rgb(255, 59, 157), rgb(182, 130, 238));
+        }
+
+        div.claimButton{
+            position: relative;
+
+            cursor: pointer;
+
+            width: 27.5%;
+            height: 70%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 1.5em;
+            font-weight: 500;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+
+            border: 1px solid white;
+            color: white;
+            background-image: linear-gradient(to right, rgb(255, 59, 157), rgb(182, 130, 238));
+        }
+
+        div.stakingPanel{
+            position: absolute;
+
+            width: 950px;
+            height: 420px;
+
+            left: 50%;
+            top: 50%;
+
+            margin-top: -150px;
+            margin-left: -475px;
+
+            border-top: 1px solid rgba(255, 255, 255, 0.35);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+
+
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-evenly;
+
+            visibility: hidden;
+        }
+
+        div.stakedNFTs{
+            position: relative;
+
+            width: 60%;
+            height: 95%;
+
+            border: 1px solid white;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        div.tabs{
+            position: relative;
+
+            width: 25%;
+            height: 100%;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        div.stakeNFT{
+            position: relative;
+
+            cursor: pointer;
+
+            width: 90%;
+            height: 20%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            margin-bottom: 10px;
+
+            font-size: 1.5em;
+            font-weight: 500;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+
+            border: 1px solid white;
+            color: white;
+            background-image: linear-gradient(to right, rgb(255, 59, 157), rgb(182, 130, 238));
+        }
+
+        div.parentScrollDiv{
+            display: flex;
+			align-items: center;
+			justify-content: top;
+			flex-direction: column;
+
+			width: 100%;
+			height: 0px;
+        }
+
+        div.scrollDiv{
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
+			overflow-y: scroll;
+		}
+
+        div.scrollDiv::-webkit-scrollbar{
+            width: 10px;
+        }
+
+        div.scrollDiv::-webkit-scrollbar-track{
+            background-color: rgb(255, 59, 157);
+        }
+
+        div.scrollDiv::-webkit-scrollbar-thumb{
+            background-color: purple;
+        }
+
+        div.scrollDiv::-webkit-scrollbar-thumb:hover{
+            background-color: rgb(95, 0, 95);
+        }
+
+
+
+        div.scrollObject{
+			padding: 0px;
+
+			width: 100%;
+			height: 0px;
+
+            display: flex;
+			align-items: center;
+			justify-content: top;
+			flex-direction: column;
+		}
+
+        div.claimPanel{
+            position: absolute;
+
+            width: 950px;
+            height: 420px;
+
+            left: 50%;
+            top: 50%;
+
+            margin-top: -150px;
+            margin-left: -475px;
+
+            border-top: 1px solid rgba(255, 255, 255, 0.35);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-evenly;
+
+            visibility: hidden;
+        }
+
+        h1.reward{
+            color: white;
+            font-size: 2.5em;
+            font-weight: 500;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        div.rewardButton{
+            position: relative;
+
+            cursor: pointer;
+
+            width: 27.5%;
+            height: 20%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 1.5em;
+            font-weight: 500;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+
+            border: 1px solid white;
+            color: white;
+            background-image: linear-gradient(to right, rgb(255, 59, 157), rgb(182, 130, 238));
+        }
+
+        div.stakingRow{
+            position: relative;
+
+            width: 95%;
+            height: 150px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
+            flex-direction: row;
+
+            border: 1px solid white;
+        }
+
+        div.stakedNFT{
+            position: relative;
+
+            width: 125px;
+            height: 125px;
+
+            cursor: pointer;
+
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border: 1px solid white;
+        }
+
+        img.stakedNFTImage{
+            width: 125px;
+            height: 125px;
+        }
+
+        div.unstakedNFT{
+            position: relative;
+
+            width: 125px;
+            height: 125px;
+
+            cursor: pointer;
+
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border: 1px solid white;
+        }
+
+        img.unstakedNFTImage{
+            width: 125px;
+            height: 125px;
+        }
+
+        h1.stakedNFTRewardText{
+            visibility: hidden;
+
+            color: white;
+            font-size: 1.5em;
+            font-weight: 500;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        @media screen and (max-width: 1100px){
+
+            div.connectButton{
+                width: 300px;
+                height: 75px;
+            }
+
+            div.parent{
+                width: 500px;
+                height: 300px;
+
+                margin-left: -250px;
+                margin-top: -150px;
+            }
+
+            div.stakingPanel{
+            width: 475px;
+            height: 210px;
+
+            margin-top: -75px;
+            margin-left: -237.5px;
+            }
+
+            div.claimPanel{
+                width: 475px;
+            }
+
+            div.stakedNFTs{
+                width: 35%;
+            }
+
+        }
+    </style>
+
+    <script type="text/javascript">
+
+        var account = null;
+
+        var stakingContract = null;
+        const stakingABI = [
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "previousOwner",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "OwnershipTransferred",
+		"type": "event"
+	},
+	{
+		"inputs": [],
+		"name": "NFTsStaked",
+		"outputs": [
+			{
+				"internalType": "uint32",
+				"name": "",
+				"type": "uint32"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "findRewards",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "ownerOfStakedNFT",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "parentNFT",
+		"outputs": [
+			{
+				"internalType": "contract RockstarApes",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "rareIDs",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "rareRewardRate",
+		"outputs": [
+			{
+				"internalType": "uint32",
+				"name": "",
+				"type": "uint32"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "receiveReward",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "renounceOwnership",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "rewardRate",
+		"outputs": [
+			{
+				"internalType": "uint32",
+				"name": "",
+				"type": "uint32"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "rewardsToken",
+		"outputs": [
+			{
+				"internalType": "contract RockstarApesCoin",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "addy",
+				"type": "address"
+			}
+		],
+		"name": "setNFTAddress",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint32",
+				"name": "rate",
+				"type": "uint32"
+			}
+		],
+		"name": "setRewardRate",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "addy",
+				"type": "address"
+			}
+		],
+		"name": "setTokenAddress",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "showRewards",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "stakeNFT",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "stakedNFTs",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "stakingStartTime",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "transferOwnership",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_tokenId",
+				"type": "uint256"
+			}
+		],
+		"name": "unStakeNFT",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "unclaimedRewards",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+];
+        const stakingAddress = "";
+
+        var tokenContract = null;
+        const tokenABI = [];
+        const tokenAddress = "";
+
+        var nftContract = null;
+        const nftABI = [];
+        const nftAddress = "";
+
+        let currentRowCount = 0;
+        let currentItemsPerRow = {};
+        let maxItemsPerRow = 3;
+        if(window.screen.width < 1100){
+            maxItemsPerRow = 1;
+        }
+        let currentStakedItems = 0;
+        let currentUnstakedItems = 0;
+        
+
+
+        // staking
+        var nftIDsStaked = [];
+        const stakedNFTRewards = {};
+        var nftIDsOwned = [];
+        var maxSupply = 7777; // changable 
+        var rewardsEarned = 0;
+        var baseURI = "https://rockstarapes.mypinata.cloud/ipfs/QmaVeGRTBVUTVmCmwxa6p1xv71GQTTKALneREkyTbjxx2L/";
+        var shouldStake = true;
+        var selectedStakedId = 0;
+        var selectedUnstakedId = 0;
+        var tokenName = "$ROCK";
+
+        const connectWallet = async () =>{ 
+            if(window.ethereum){
+                await window.ethereum.send('eth_requestAccounts');
+                window.web3 = new Web3(window.ethereum);
+
+                var accounts = await web3.eth.getAccounts();
+                account = accounts[0];
+
+                stakingContract = new web3.eth.Contract(stakingABI, stakingAddress);
+                tokenContract = new web3.eth.Contract(tokenABI, tokenAddress);
+                nftContract = new web3.eth.Contract(nftABI, nftAddress);
+
+                document.getElementById("connectButton").style.visibility = 'hidden';
+                document.getElementById("parent").style.visibility = "visible";
+
+                openStakingPanel();
+                await findNFTStakedIds();
+                await findNFTOwnedIds();
+                await findRewards();
+                setRewardText();
+
+                for(let i = 0; i < nftIDsStaked.length; i++){
+                    addNFTOnRow(nftIDsStaked[i]);
+                }
+
+                const stakedNFTRewardText = document.getElementById("stakedNFTRewardText");
+
+                for(let i = 1; i <= currentStakedItems; i++){
+                    const nft = document.getElementById("stakedNFT ".concat(i));
+                    nft.addEventListener('mouseover', (e) =>{
+                        nft.style.transition = "border 0.5s ease";
+                        nft.style.border = "1px yellow solid";
+                    });
+                    nft.addEventListener('mouseleave', (e) =>{
+                        nft.style.transition = "border 0.5s ease";
+                        nft.style.border = "1px white solid";
+                    });
+                    nft.addEventListener('click', (e) =>{
+                        enableUnstakeButton();
+                        selectedStakedId = i;
+
+                        setStakedNFTRewardText(i);
+                    });
+                }
+
+                addRowToPanel();
+
+                for(let i = 0; i < nftIDsOwned.length; i++){
+                    addNonStakedNFTOnRow(nftIDsOwned[i]);
+                }
+
+                for(let i = 1; i <= currentUnstakedItems; i++){
+                    const nft = document.getElementById("unstakedNFT ".concat(i));
+                    nft.addEventListener('mouseover', (e) =>{
+                        nft.style.transition = "border 0.5s ease";
+                        nft.style.border = "1px rgb(0, 229, 255) solid";
+                    });
+                    nft.addEventListener('mouseleave', (e) =>{
+                        nft.style.transition = "border 0.5s ease";
+                        nft.style.border = "1px white solid";
+                    });
+                    nft.addEventListener('click', (e) =>{
+                        enableStakeButton();
+                        selectedUnstakedId = i;
+
+                        stakedNFTRewardText.style.visibility = "hidden";
+                    });
+                }
+
+                document.getElementById("stakeNFT").addEventListener('click', (e) =>{
+                    if(shouldStake){
+                        stakeNFT();
+                    }
+                    else{
+                        unstakeNFT();
+                    }
+                });
+            }
+        }
+
+        const initialise = () =>{
+            const connectButton = document.getElementById("connectButton");
+            const stakeButton = document.getElementById("stakeButton");
+            const claimButton = document.getElementById("claimButton");
+            const stakeNFT = document.getElementById("stakeNFT");
+            const unstakeNFT = document.getElementById("unstakeNFT");
+            const rewardButton = document.getElementById("rewardButton");
+
+            connectButton.addEventListener('click', (e) =>{
+                connectWallet();
+            });
+            connectButton.addEventListener('mouseover', (e) =>{
+                connectButton.style.transition = "color 0.5s ease";
+                connectButton.style.color = "black";
+            });
+            connectButton.addEventListener('mouseleave', (e) =>{
+                connectButton.style.transition = "color 0.5s ease";
+                connectButton.style.color = "white";
+            });
+
+            claimButton.addEventListener('click', (e) =>{
+                openClaimPanel();
+            });
+            claimButton.addEventListener('mouseover', (e) =>{
+                claimButton.style.transition = "color 0.5s ease";
+                claimButton.style.color = "black";
+            });
+            claimButton.addEventListener('mouseleave', (e) =>{
+                claimButton.style.transition = "color 0.5s ease";
+                claimButton.style.color = "white";
+            });
+
+            stakeButton.addEventListener('click', (e) =>{
+                openStakingPanel();
+            });
+            stakeButton.addEventListener('mouseover', (e) =>{
+                stakeButton.style.transition = "color 0.5s ease";
+                stakeButton.style.color = "black";
+            });
+            stakeButton.addEventListener('mouseleave', (e) =>{
+                stakeButton.style.transition = "color 0.5s ease";
+                stakeButton.style.color = "white";
+            });
+
+            stakeNFT.addEventListener('click', (e) =>{
+            });
+            stakeNFT.addEventListener('mouseover', (e) =>{
+                stakeNFT.style.transition = "color 0.5s ease";
+                stakeNFT.style.color = "black";
+            });
+            stakeNFT.addEventListener('mouseleave', (e) =>{
+                stakeNFT.style.transition = "color 0.5s ease";
+                stakeNFT.style.color = "white";
+            });
+
+            rewardButton.addEventListener('click', (e) =>{
+            });
+            rewardButton.addEventListener('mouseover', (e) =>{
+                rewardButton.style.transition = "color 0.5s ease";
+                rewardButton.style.color = "black";
+            });
+            rewardButton.addEventListener('mouseleave', (e) =>{
+                rewardButton.style.transition = "color 0.5s ease";
+                rewardButton.style.color = "white";
+            });
+        }
+
+        const openParent = () =>{
+            document.getElementById("parent").style.visibility = "visible";
+        }
+
+        const openStakingPanel = () =>{
+            document.getElementById("stakingPanel").style.visibility = "visible";
+            document.getElementById("claimPanel").style.visibility = "hidden";
+        }
+
+        const openClaimPanel = () =>{
+            document.getElementById("stakingPanel").style.visibility = "hidden";
+            document.getElementById("claimPanel").style.visibility = "visible";
+        }
+
+        const addRowToPanel = () =>{
+            currentRowCount++;
+            currentItemsPerRow[currentRowCount] = 0;
+
+            const newRow = document.createElement("div");
+            newRow.classList.add('stakingRow');
+            newRow.id = "stakingRow ".concat(currentRowCount.toString());
+            document.getElementById("scrollObject").appendChild(newRow);
+
+            let rowHeight = 150;
+            let parentHeight = document.getElementById("parentScrollDiv").offsetHeight + rowHeight;
+            document.getElementById("parentScrollDiv").style.height = parentHeight.toString().concat("px");
+            document.getElementById("scrollObject").style.height = parentHeight.toString().concat("px");
+        }
+
+        const addNFTOnRow = (nftId) =>{
+            if(currentItemsPerRow[currentRowCount] === maxItemsPerRow || currentRowCount === 0){
+                addRowToPanel();
+            }
+            currentItemsPerRow[currentRowCount]++;
+            currentStakedItems++;
+
+            const newNFT = document.createElement("div");
+            const nftImage = document.createElement("img");
+
+            newNFT.classList.add('stakedNFT');
+            newNFT.id = "stakedNFT ".concat(currentStakedItems);
+            nftImage.classList.add('stakedNFTImage');
+            nftImage.id = "stakedNFTImage ".concat(currentStakedItems);
+            nftImage.src = (baseURI.concat(nftId.toString(), ".png"));
+
+            let rowId = "stakingRow ".concat(currentRowCount.toString());
+            document.getElementById(rowId).appendChild(newNFT);
+            document.getElementById(newNFT.id).appendChild(nftImage);
+        }
+
+        const addNonStakedNFTOnRow = (nftId) =>{
+            if(currentItemsPerRow[currentRowCount] === maxItemsPerRow || currentRowCount === 0){
+                addRowToPanel();
+            }
+            currentItemsPerRow[currentRowCount]++;
+            currentUnstakedItems++;
+
+            const newNFT = document.createElement("div");
+            const nftImage = document.createElement("img");
+
+            newNFT.classList.add('unstakedNFT');
+            newNFT.id = "unstakedNFT ".concat(currentUnstakedItems);
+            nftImage.classList.add('unstakedNFTImage');
+            nftImage.id = "unstakedNFTImage ".concat(currentUnstakedItems);
+            nftImage.src = (baseURI.concat(nftId.toString(), ".png"));
+
+            let rowId = "stakingRow ".concat(currentRowCount.toString());
+            document.getElementById(rowId).appendChild(newNFT);
+            document.getElementById(newNFT.id).appendChild(nftImage);
+        }
+
+
+        const findNFTStakedIds = async () =>{
+            for(let i = 1; i <= maxSupply; i++){
+                if(await stakingContract.methods.ownerOfStakedNFT(i).call({from: account})){
+                    nftIDsStaked.push(i);
+                }
+            }
+        }
+
+        const findNFTOwnedIds = async () =>{
+            for(let i = 1; i <= maxSupply; i++){
+                if(await nftContract.methods.ownerOf(i).call({from: account})){
+                    nftIDsOwned.push(i);
+                }
+            }
+        }
+
+        const enableStakeButton = () =>{
+            document.getElementById("stakeNFT").textContent = "STAKE NFT";
+        }
+
+        const enableUnstakeButton = () =>{
+            document.getElementById("stakeNFT").textContent = "UNSTAKE NFT";
+        }
+
+        const findRewards = async () =>{
+            for(let i = 0; i < nftIDsStaked.length; i++){
+                let reward = await stakingContract.methods.showRewards(nftIDsStaked[i]).call({from: account});
+                reward += await stakingContract.methods.unclaimedRewards(nftIDsStaked[i]).call({from: account});
+                stakedNFTRewards[nftIDsStaked[i]] = reward;
+                rewardsEarned += reward;
+            }
+        }
+
+        const setRewardText = () =>{
+            document.getElementById("reward").textContent = `YOU HAVE ${rewardsEarned} ${tokenName} TO CLAIM`;
+        }
+
+        const stakeNFT = async () =>{
+            console.log("staking NFT");
+            await stakingContract.methods.stakeNFT(selectedUnstakedId).send({from: account, value: 0});
+            nftIDsStaked.push(selectedUnstakedId);
+            nftIDsOwned.splice(selectedUnstakedId);
+        }
+
+        const unstakeNFT = async () =>{
+            console.log("unstaking NFT");
+            await stakingContract.methods.unStakeNFT(selectedStakedId).send({from: account, value: 0});
+            rewardsEarned -= stakedNFTRewards[selectedStakedId];
+            setRewardText();
+            stakedNFTRewards[selectedStakedId] = 0;
+
+            nftIDsOwned.push(selectedStakedId);
+            nftIDsStaked.splice(selectedStakedId);
+        }
+
+        const claimRewards = async () =>{
+            console.log("claiming rewards");
+
+            for(let i = 0; i < nftIDsStaked.length; i++){
+                await stakingContract.methods.receiveReward(nftIDsStaked[i])
+            }
+            rewardsEarned = 0;
+            setRewardText();
+        }
+
+        const setStakedNFTRewardText = (nftID) =>{
+            let reward = stakedNFTRewards[nftID];
+            const stakedNFTRewardText = document.getElementById("stakedNFTRewardText");
+
+            stakedNFTRewardText.style.visibility = "visible";
+            stakedNFTRewardText.textContent = `${reward} ${tokenName} TO CLAIM`;
+        }
+
+    </script>
+    
+</body>
+</html>
